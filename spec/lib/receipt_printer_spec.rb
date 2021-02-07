@@ -8,8 +8,8 @@ describe ReceiptPrinter do
       receipt = ReceiptPrinter.new(output: output, items: items)
 
       receipt.print
-
       output.rewind
+
       expect(output.read).to eq expected_output
     end
 

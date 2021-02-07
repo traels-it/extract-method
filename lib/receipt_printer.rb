@@ -13,25 +13,59 @@ class ReceiptPrinter
   end
 
   def print
-    subtotal = items.reduce(0) do |sum, item|
-      item_cost = COST[item]
-      output.puts "#{item}: #{sprintf('$%.2f', item_cost)}"
-
-      sum + item_cost.to_i
-    end
-
-    output.puts divider
-    output.puts "subtotal: #{sprintf('$%.2f', subtotal)}"
-    output.puts "tax: #{sprintf('$%.2f', subtotal * TAX)}"
-    output.puts divider
-    output.puts "total: #{sprintf('$%.2f', subtotal + (subtotal * TAX))}"
+    print_items
+    print_divider
+    print_subtotal
+    print_tax
+    print_divider
+    print_total
   end
 
   private
 
   attr_reader :output, :items
 
-  def divider
-    '-' * 13
+  def print_items
+    items.each { |item| print_item(item) }
+  end
+
+  def print_item(item)
+    print_line(label: item, amount: cost(item))
+  end
+
+  def print_subtotal
+    print_line(label: "subtotal", amount: subtotal)
+  end
+
+  def print_tax
+    print_line(label: "tax", amount: tax)
+  end
+
+  def print_total
+    print_line(label: "total", amount: (subtotal + tax))
+  end
+
+  def print_line(label:, amount:)
+    output.puts "#{label}: #{currency_format(amount)}"
+  end
+
+  def cost(item)
+    COST[item]
+  end
+
+  def currency_format(amount)
+    sprintf('$%.2f', amount)
+  end
+
+  def subtotal
+    @subtotal ||= items.sum { |item| cost(item).to_i }
+  end
+
+  def tax
+    subtotal * TAX
+  end
+
+  def print_divider
+    output.puts '-' * 13
   end
 end
