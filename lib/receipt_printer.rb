@@ -14,10 +14,10 @@ class ReceiptPrinter
 
   def print
     print_items
-    output.puts divider
+    print_divider
     print_subtotal
     print_tax
-    output.puts divider   
+    print_divider   
     print_total
   end
 
@@ -47,6 +47,10 @@ class ReceiptPrinter
 
   def print_total
     output.puts "total: #{sprintf('$%.2f', subtotal + (subtotal * TAX))}"
+  end
+
+  def print_divider
+    output.puts divider
   end
 
   def divider
